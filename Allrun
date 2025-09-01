@@ -1,0 +1,36 @@
+#!/bin/bash
+set -e
+
+# --- User options ---
+PARALLEL_RUN=true
+nSubDomains=10   # <-- set number of subdomains here
+
+# Run from this directory
+cd "${0%/*}" || exit 1
+
+# Source OpenFOAM helper functions
+. "$WM_PROJECT_DIR/bin/tools/RunFunctions"
+
+# Preprocessing
+restore0Dir
+
+# Copy mesh if exists
+if [ -d "mesh/polyMesh" ]; then
+    echo "Copying mesh from ./mesh/polyMesh -> constant/polyMesh ..."
+    cp -r mesh/polyMesh constant/
+fi
+
+APP=$(getApplication)
+
+if [ "$PARALLEL_RUN" = true ]; then
+    echo "Running in PARALLEL with $nSubDomains subdomains"
+    
+    runApplication decomposePar 
+    mpirun -np $nSubDomains $APP -parallel
+    runApplication reconstructPar
+
+else
+    echo "Running in SERIAL"
+    runApplication "$APP"
+fi
+

@@ -1,5 +1,15 @@
 # TestCase
 Test Case
+🧪 Development & Institutional Context
+This updated test case was developed by Mehrdad Kazemi under the supervision of Prof. Dr.-Ing. habil. Nikolai Kornev at:
+
+Universität Rostock
+Fakultät für Maschinenbau und Schiffstechnik
+Lehrstuhl für Modellierung und Simulation
+Mehrdad Kazemi
+Albert-Einstein-Str. 2
+18059 Rostock, Deutschland
+
 Run
 
     Set options in Allrun:

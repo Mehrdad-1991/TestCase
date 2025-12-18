@@ -3,34 +3,52 @@ set -e
 
 # --- User options ---
 PARALLEL_RUN=true
-nSubDomains=10   # <-- set number of subdomains here
+nSubDomains=10
 
 # Run from this directory
 cd "${0%/*}" || exit 1
 
-# Source OpenFOAM helper functions
+# ---- Source OpenFOAM environment safely (disable errexit during sourcing) ----
+# If OpenFOAM env already loaded, we avoid re-sourcing.
+if [ -z "${WM_PROJECT_DIR:-}" ]; then
+    set +e
+    # Adjust this path if your installation differs:
+    . /usr/lib/openfoam/openfoam2406/etc/bashrc
+    set -e
+fi
+
+# Source OpenFOAM helper functions (also with errexit disabled as a precaution)
+set +e
 . "$WM_PROJECT_DIR/bin/tools/RunFunctions"
+set -e
+
+# ---- Ensure mesh exists (extract archive or copy fallback) ----
+if [ ! -d "constant/polyMesh" ]; then
+    if [ -f "mesh/polyMesh.tar.gz" ]; then
+        echo "Extracting mesh: mesh/polyMesh.tar.gz -> constant/polyMesh ..."
+        mkdir -p constant
+        tar -C constant -xzf mesh/polyMesh.tar.gz
+    elif [ -d "mesh/polyMesh" ]; then
+        echo "Copying mesh: ./mesh/polyMesh -> constant/polyMesh ..."
+        mkdir -p constant
+        cp -r mesh/polyMesh constant/
+    else
+        echo "ERROR: Missing mesh. Provide constant/polyMesh OR mesh/polyMesh.tar.gz OR mesh/polyMesh" >&2
+        exit 2
+    fi
+fi
 
 # Preprocessing
 restore0Dir
-
-# Copy mesh if exists
-if [ -d "mesh/polyMesh" ]; then
-    echo "Copying mesh from ./mesh/polyMesh -> constant/polyMesh ..."
-    cp -r mesh/polyMesh constant/
-fi
 
 APP=$(getApplication)
 
 if [ "$PARALLEL_RUN" = true ]; then
     echo "Running in PARALLEL with $nSubDomains subdomains"
-    
-    runApplication decomposePar 
-    mpirun -np $nSubDomains $APP -parallel
+    runApplication decomposePar
+    mpirun -np "$nSubDomains" "$APP" -parallel
     runApplication reconstructPar
-
 else
     echo "Running in SERIAL"
     runApplication "$APP"
 fi
-

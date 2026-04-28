@@ -19,8 +19,8 @@ Run
 
 
     Execute:
-
-    ./Allrun
+    1)chmod +x All*
+    2)./Allrun
 
 
     Serial mode: runs solver directly.
@@ -38,6 +38,6 @@ Clean
 
 Notes
 
-    Make sure mesh/polyMesh/ exists before running.
+    Make sure mesh/polyMesh.zip exists before running.
 
     Adjust solver and settings in system/ and constant/ as needed.

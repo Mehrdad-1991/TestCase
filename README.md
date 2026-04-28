@@ -1,90 +1,51 @@
 # Test Case
 
-## Development and Institutional Context
+This repository contains the OpenFOAM test case used in the manuscript.  
+The case was developed by Mehrdad Kazemi under the supervision of Prof. Dr.-Ing. habil. Nikolai Kornev at the University of Rostock, Chair of Modelling and Simulation.
 
-This test case was developed by Mehrdad Kazemi under the supervision of  
-Prof. Dr.-Ing. habil. Nikolai Kornev at:
+## Run the Case
 
-Universität Rostock  
-Fakultät für Maschinenbau und Schiffstechnik  
-Lehrstuhl für Modellierung und Simulation  
-Albert-Einstein-Str. 2  
-18059 Rostock, Germany  
+Edit the run options in `Allrun` if needed:
 
----
+    PARALLEL_RUN=true
+    nSubDomains=10
 
-## Running the Case
+Then run:
 
-Before running, set the desired options inside `Allrun`:
+    chmod +x All*
+    ./Allrun
 
-```bash
-PARALLEL_RUN=true    # true for parallel run, false for serial run
-nSubDomains=10       # number of processor subdomains for parallel run
+If `constant/polyMesh` is not available, the script automatically extracts or copies the mesh from one of the following locations:
 
-Then execute:
+    mesh/polyMesh.tar.gz
+    mesh/polyMesh.zip
+    mesh/polyMesh
 
-chmod +x All*
-./Allrun
+In serial mode (`PARALLEL_RUN=false`), the solver is run directly.  
+In parallel mode (`PARALLEL_RUN=true`), the script runs `decomposePar`, executes the solver with MPI, and reconstructs the results.
 
-The script automatically checks whether the mesh exists. If constant/polyMesh is not present, it attempts to extract or copy the mesh from one of the following locations:
+## Clean the Case
 
-mesh/polyMesh.tar.gz
-mesh/polyMesh.zip
-mesh/polyMesh
-Serial Mode
+To remove generated results and reset the case:
 
-If
+    ./Allclean
 
-PARALLEL_RUN=false
-
-the solver is executed directly in serial mode.
-
-Parallel Mode
-
-If
-
-PARALLEL_RUN=true
-
-the script performs the following steps automatically:
-
-decomposePar
-mpirun -np nSubDomains <solver> -parallel
-reconstructPar
-Cleaning the Case
-
-To remove generated results and reset the case, execute:
-
-./Allclean
-
-This removes generated time directories, processor directories, and post-processing output.
-
-Notes
-
-Before running the case, ensure that the mesh archive or mesh folder is available. The recommended mesh file is:
-
-mesh/polyMesh.zip
-
-Solver settings can be modified in:
-
-system/
-constant/
-
-Initial and boundary fields are stored in:
-
-0.orig/
-Post-Processing
+## Post-Processing
 
 Post-processing scripts are provided in:
 
-Python_postProcessing_code
+    Python_postProcessing_code
 
-To run the post-processing workflow, first enter the folder:
+To run them:
 
-cd Python_postProcessing_code
+    cd Python_postProcessing_code
+    chmod +x AllrunPostProcesscodes.sh
+    ./AllrunPostProcesscodes.sh
 
-Then execute:
+Python 3.12, or a compatible Python 3 environment, is recommended.
 
-chmod +x AllrunPostProcesscodes.sh
-./AllrunPostProcesscodes.sh
+## Notes
 
-The post-processing scripts require Python 3.12 or a compatible Python 3 environment with the required packages installed.
+- Initial and boundary fields are stored in `0.orig/`.
+- Solver settings are stored in `system/` and `constant/`.
+- The recommended mesh archive is `mesh/polyMesh.zip`.

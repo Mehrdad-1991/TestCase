@@ -1,8 +1,10 @@
+---
+
 ## Repository Structure
 
 The repository contains three case folders:
 
-
+```text
 cases/
 ├── Without-airInjection/
 ├── With-airInjection_FROM_Tap1_Q1LperMin/
@@ -19,3 +21,4 @@ The purpose of each case is summarized below.
 
 Most air-injection results in the manuscript are obtained using injection through Tap 1. The Tap 5 case is included separately because the cavitation-area validation in Fig. 14 follows the corresponding experimental configuration available in the reference data.
 
+---

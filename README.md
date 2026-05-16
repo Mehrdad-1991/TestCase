@@ -1,51 +1,21 @@
-# Test Case
+## Repository Structure
 
-This repository contains the OpenFOAM test case used in the manuscript.  
-The case was developed by Mehrdad Kazemi under the supervision of Prof. Dr.-Ing. habil. Nikolai Kornev at the University of Rostock, Chair of Modelling and Simulation.
+The repository contains three case folders:
 
-## Run the Case
 
-Edit the run options in `Allrun` if needed:
+cases/
+├── Without-airInjection/
+├── With-airInjection_FROM_Tap1_Q1LperMin/
+└── With-airInjection_FROM_Tap5_Q1LperMin/
+```
 
-    PARALLEL_RUN=true
-    nSubDomains=10
+The purpose of each case is summarized below.
 
-Then run:
+| Manuscript result | Case folder | Description |
+|---|---|---|
+| Fig. 2, Fig. 3, Table 3, Table 5 | `cases/Without-airInjection` | Baseline cavitating hydrofoil case without air injection, \(Q=0~\mathrm{L/min}\). |
+| Fig. 4--7, Fig. 9--13, Fig. 15--17, Table 6--9 | `cases/With-airInjection_FROM_Tap1_Q1LperMin` | Main air-injection case, \(Q=1~\mathrm{L/min}\), injection through Tap 1. |
+| Fig. 14 | `cases/With-airInjection_FROM_Tap5_Q1LperMin` | Additional validation case, \(Q=1~\mathrm{L/min}\), injection through Tap 5, used to match the reference experimental cavitation-area data. |
 
-    chmod +x All*
-    ./Allrun
+Most air-injection results in the manuscript are obtained using injection through Tap 1. The Tap 5 case is included separately because the cavitation-area validation in Fig. 14 follows the corresponding experimental configuration available in the reference data.
 
-If `constant/polyMesh` is not available, the script automatically extracts or copies the mesh from one of the following locations:
-
-    mesh/polyMesh.tar.gz
-    mesh/polyMesh.zip
-    mesh/polyMesh
-
-In serial mode (`PARALLEL_RUN=false`), the solver is run directly.  
-In parallel mode (`PARALLEL_RUN=true`), the script runs `decomposePar`, executes the solver with MPI, and reconstructs the results.
-
-## Clean the Case
-
-To remove generated results and reset the case:
-
-    ./Allclean
-
-## Post-Processing
-
-Post-processing scripts are provided in:
-
-    Python_postProcessing_code
-
-To run them:
-
-    cd Python_postProcessing_code
-    chmod +x AllrunPostProcesscodes.sh
-    ./AllrunPostProcesscodes.sh
-
-Python 3.12, or a compatible Python 3 environment, is recommended.
-
-## Notes
-
-- Initial and boundary fields are stored in `0.orig/`.
-- Solver settings are stored in `system/` and `constant/`.
-- The recommended mesh archive is `mesh/polyMesh.zip`.
